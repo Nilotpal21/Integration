@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Topbar } from './Topbar';
 import { Sidebar } from './Sidebar';
 import { FloatingHelperButton } from '@/components/helper/FloatingHelperButton';
+import { HelperSheet } from '@/components/helper/HelperSheet';
 import { useAuth } from '@/lib/auth';
 
 const PRE_AUTH_ROUTES = ['/login', '/forgot-password', '/reset-password', '/invite', '/auth'];
@@ -43,6 +44,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
       </div>
       <FloatingHelperButton />
+      <HelperSheet />
     </div>
   );
 }

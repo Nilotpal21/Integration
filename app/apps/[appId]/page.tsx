@@ -500,7 +500,7 @@ export default async function ReviewStudioPage({ params }: PageProps) {
             categories={context.evalCategories}
           />
           <SandboxPreview script={context.sandboxScript} />
-          <HelperCard suggestions={context.helperSuggestions} />
+          <HelperCard suggestions={context.helperSuggestions} appName={app.name} />
         </aside>
       </div>
 

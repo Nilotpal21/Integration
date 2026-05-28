@@ -3,11 +3,13 @@
 import { Sparkles } from 'lucide-react';
 import { useActivePersona, useActiveProjectId } from '@/lib/persona';
 import { tenant, getProjectById } from '@/lib/mock-data';
+import { useHelper } from '@/lib/helper-state';
 
 export function WelcomeHeader() {
   const persona = useActivePersona();
   const projectId = useActiveProjectId();
   const project = getProjectById(projectId);
+  const openHelper = useHelper((s) => s.open);
 
   return (
     <header className="flex items-end justify-between">
@@ -22,6 +24,13 @@ export function WelcomeHeader() {
       </div>
       <button
         type="button"
+        onClick={() =>
+          openHelper({
+            kind: 'dashboard',
+            label: `Dashboard · ${project?.name ?? 'workspace'}`,
+            projectName: project?.name,
+          })
+        }
         className="h-8 px-3 rounded-md bg-purple/15 text-purple hover:bg-purple/20 transition-colors text-xs font-medium flex items-center gap-1.5"
       >
         <Sparkles className="size-3.5" />
