@@ -8,3 +8,4 @@ export * from './sop-flags';
 export * from './projects';
 export * from './review-studio';
 export * from './evaluation';
+export * from './approvals';

@@ -37,6 +37,7 @@ import { EvalCard } from '@/components/review-studio/EvalCard';
 import { SandboxPreview } from '@/components/review-studio/SandboxPreview';
 import { HelperCard } from '@/components/review-studio/HelperCard';
 import { Panel } from '@/components/review-studio/Panel';
+import { SubmitForApprovalButton } from '@/components/review-studio/SubmitForApprovalButton';
 import { Footer } from '@/components/shell/Footer';
 import { cn } from '@/lib/utils';
 
@@ -136,23 +137,18 @@ export default async function ReviewStudioPage({ params }: PageProps) {
           >
             Discard changes
           </button>
-          {canSubmit ? (
-            <button
-              type="button"
-              className="h-8 px-3.5 rounded-md text-xs font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center gap-1.5"
-            >
-              <Send className="size-3.5" />
-              Submit for approval
-            </button>
-          ) : (
-            <span
-              title={`Resolve ${blockers} Blocker${blockers > 1 ? 's' : ''} before submitting.`}
-              className="h-8 px-3.5 rounded-md text-xs font-medium bg-background-elevated text-foreground-subtle cursor-not-allowed flex items-center gap-1.5"
-            >
-              <Send className="size-3.5" />
-              Submit for approval
-            </span>
-          )}
+          <SubmitForApprovalButton
+            appName={app.name}
+            appId={app.id}
+            sopReason={`Submission for ${app.sopFilename}, evaluation score ${app.evaluationScore}.`}
+            guardrailsCount={sop?.attachedGuardrails.length ?? 0}
+            knowledgeCount={sop?.attachedKnowledge.length ?? 0}
+            blockers={blockers}
+            warnings={warnings}
+            evaluationScore={app.evaluationScore}
+            approvalsRequired={app.approvalsRequired}
+            canSubmit={canSubmit}
+          />
         </div>
       </header>
 
@@ -483,23 +479,18 @@ export default async function ReviewStudioPage({ params }: PageProps) {
               <CheckItem pass={true}>All required approvers identified ({app.approvalsRequired} of {app.approvalsRequired})</CheckItem>
             </ul>
             <div className="mt-4 flex items-center gap-2">
-              {canSubmit ? (
-                <button
-                  type="button"
-                  className="h-9 px-4 rounded-md text-sm font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center gap-1.5"
-                >
-                  <Send className="size-3.5" />
-                  Submit for approval
-                </button>
-              ) : (
-                <span
-                  title={`Resolve ${blockers} Blocker${blockers > 1 ? 's' : ''} before submitting.`}
-                  className="h-9 px-4 rounded-md text-sm font-medium bg-background-elevated text-foreground-subtle cursor-not-allowed flex items-center gap-1.5"
-                >
-                  <Send className="size-3.5" />
-                  Submit for approval
-                </span>
-              )}
+              <SubmitForApprovalButton
+                appName={app.name}
+                appId={app.id}
+                sopReason={`Submission for ${app.sopFilename}, evaluation score ${app.evaluationScore}.`}
+                guardrailsCount={sop?.attachedGuardrails.length ?? 0}
+                knowledgeCount={sop?.attachedKnowledge.length ?? 0}
+                blockers={blockers}
+                warnings={warnings}
+                evaluationScore={app.evaluationScore}
+                approvalsRequired={app.approvalsRequired}
+                canSubmit={canSubmit}
+              />
             </div>
           </section>
         </div>

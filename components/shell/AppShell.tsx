@@ -2,6 +2,7 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { Toaster } from 'sonner';
 import { Topbar } from './Topbar';
 import { Sidebar } from './Sidebar';
 import { FloatingHelperButton } from '@/components/helper/FloatingHelperButton';
@@ -52,6 +53,18 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <FloatingHelperButton />
       <HelperSheet />
+      <Toaster
+        theme="dark"
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: 'hsl(220 3% 12.5%)',
+            border: '1px solid hsl(220 4% 18%)',
+            color: 'hsl(220 1% 98%)',
+            fontSize: 13,
+          },
+        }}
+      />
     </div>
   );
 }
