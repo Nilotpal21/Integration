@@ -2,9 +2,10 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Plus, Search, FolderOpen, Bot, Clock, ChevronDown } from 'lucide-react';
+import { Search, FolderOpen, Bot, Clock } from 'lucide-react';
 import { projects, type Project } from '@/lib/mock-data';
 import { Footer } from '@/components/shell/Footer';
+import { NewProjectButton } from '@/components/projects/NewProjectButton';
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -33,16 +34,7 @@ export default function ProjectsPage() {
     <div className="space-y-6">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Projects</h1>
-        <button
-          type="button"
-          className="h-9 pl-3 pr-2 rounded-md text-xs font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center gap-2"
-        >
-          <Plus className="size-3.5" />
-          New Project
-          <span className="size-5 -mr-1 rounded flex items-center justify-center bg-accent-foreground/10">
-            <ChevronDown className="size-3" />
-          </span>
-        </button>
+        <NewProjectButton />
       </header>
 
       <div className="relative">

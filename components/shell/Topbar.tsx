@@ -3,11 +3,17 @@
 import { Search, Bell, Plus, ChevronDown } from 'lucide-react';
 import * as Popover from '@radix-ui/react-popover';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { tenant } from '@/lib/mock-data';
 import { PersonaSwitcher } from './PersonaSwitcher';
 import { ProjectSwitcher } from './ProjectSwitcher';
 
 export function Topbar() {
+  const pathname = usePathname();
+  // On the Projects landing, hide workspace / project / search / upload —
+  // those affordances only make sense once a project is the active context.
+  const isProjectsLanding = pathname === '/projects';
+
   return (
     <header className="h-12 border-b border-border bg-background-subtle flex items-center px-4 gap-3 shrink-0">
       <Link href="/" className="flex items-center group" aria-label="Eltropy — home">
@@ -19,61 +25,67 @@ export function Topbar() {
         />
       </Link>
 
-      <Popover.Root>
-        <Popover.Trigger asChild>
-          <button
-            type="button"
-            className="flex items-center gap-1.5 ml-3 px-2 py-1 rounded-md text-foreground-muted hover:bg-background-elevated hover:text-foreground transition-colors text-xs"
+      {!isProjectsLanding && (
+        <>
+          <Popover.Root>
+            <Popover.Trigger asChild>
+              <button
+                type="button"
+                className="flex items-center gap-1.5 ml-3 px-2 py-1 rounded-md text-foreground-muted hover:bg-background-elevated hover:text-foreground transition-colors text-xs"
+              >
+                <span className="size-4 rounded bg-purple/20 text-purple flex items-center justify-center font-semibold text-[10px]">
+                  CU
+                </span>
+                <span>{tenant.shortName}</span>
+                <ChevronDown className="size-3" />
+              </button>
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Content
+                align="start"
+                sideOffset={6}
+                className="z-50 w-[280px] rounded-lg border border-border bg-background-elevated shadow-xl p-2 animate-fade-in"
+              >
+                <div className="px-2 py-1.5 text-[10px] uppercase tracking-wide text-foreground-meta font-medium">
+                  Workspace
+                </div>
+                <div className="px-2 py-2 rounded-md bg-background-muted">
+                  <div className="text-sm font-medium">{tenant.name}</div>
+                  <div className="text-[11px] text-foreground-muted mt-0.5">
+                    {tenant.charter} charter · {tenant.region} · $
+                    {(tenant.assetsUSD / 1e9).toFixed(1)}B assets
+                  </div>
+                </div>
+              </Popover.Content>
+            </Popover.Portal>
+          </Popover.Root>
+
+          <span className="text-foreground-subtle text-xs">/</span>
+
+          <ProjectSwitcher />
+
+          <div className="flex-1 max-w-sm mx-auto relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-foreground-subtle pointer-events-none" />
+            <input
+              placeholder="Search SOPs, apps, evaluations, knowledge…"
+              className="w-full h-7 bg-background-muted/60 border border-border-muted rounded-md pl-8 pr-12 text-xs text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-1 focus:ring-border-focus/40"
+            />
+            <kbd className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-foreground-subtle font-mono border border-border-muted rounded px-1 py-px pointer-events-none">
+              ⌘K
+            </kbd>
+          </div>
+
+          <Link
+            href="/sops/new"
+            className="h-7 px-2.5 rounded-md text-xs font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center gap-1.5"
           >
-            <span className="size-4 rounded bg-purple/20 text-purple flex items-center justify-center font-semibold text-[10px]">
-              CU
-            </span>
-            <span>{tenant.shortName}</span>
-            <ChevronDown className="size-3" />
-          </button>
-        </Popover.Trigger>
-        <Popover.Portal>
-          <Popover.Content
-            align="start"
-            sideOffset={6}
-            className="z-50 w-[280px] rounded-lg border border-border bg-background-elevated shadow-xl p-2 animate-fade-in"
-          >
-            <div className="px-2 py-1.5 text-[10px] uppercase tracking-wide text-foreground-meta font-medium">
-              Workspace
-            </div>
-            <div className="px-2 py-2 rounded-md bg-background-muted">
-              <div className="text-sm font-medium">{tenant.name}</div>
-              <div className="text-[11px] text-foreground-muted mt-0.5">
-                {tenant.charter} charter · {tenant.region} · ${(tenant.assetsUSD / 1e9).toFixed(1)}B
-                assets
-              </div>
-            </div>
-          </Popover.Content>
-        </Popover.Portal>
-      </Popover.Root>
+            <Plus className="size-3.5" />
+            Upload SOP
+          </Link>
+        </>
+      )}
 
-      <span className="text-foreground-subtle text-xs">/</span>
-
-      <ProjectSwitcher />
-
-      <div className="flex-1 max-w-sm mx-auto relative">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-foreground-subtle pointer-events-none" />
-        <input
-          placeholder="Search SOPs, apps, evaluations, knowledge…"
-          className="w-full h-7 bg-background-muted/60 border border-border-muted rounded-md pl-8 pr-12 text-xs text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-        />
-        <kbd className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-foreground-subtle font-mono border border-border-muted rounded px-1 py-px pointer-events-none">
-          ⌘K
-        </kbd>
-      </div>
-
-      <Link
-        href="/sops/new"
-        className="h-7 px-2.5 rounded-md text-xs font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center gap-1.5"
-      >
-        <Plus className="size-3.5" />
-        Upload SOP
-      </Link>
+      {isProjectsLanding && <div className="flex-1" />}
 
       <Popover.Root>
         <Popover.Trigger asChild>
