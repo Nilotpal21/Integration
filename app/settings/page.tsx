@@ -317,7 +317,7 @@ export default function SettingsPage() {
           className="h-9 px-3.5 rounded-md text-xs font-medium border border-error/30 text-error hover:bg-error-subtle transition-colors flex items-center gap-1.5"
         >
           <LogOut className="size-3.5" />
-          Sign out
+          Delete
         </button>
       </Section>
 

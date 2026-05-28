@@ -12,7 +12,6 @@ import {
   BookOpen,
   Settings,
   Inbox,
-  CheckCircle2,
   FileSearch,
   Activity,
   Database,
@@ -58,7 +57,6 @@ const NAV: Record<'processOwner' | 'reviewer' | 'admin', NavGroup> = {
   reviewer: {
     primary: [
       { id: 'queue', label: 'Queue', icon: Inbox, href: '/queue', count: 3 },
-      { id: 'decided', label: 'Decided', icon: CheckCircle2, href: '/queue/decided' },
       { id: 'audit', label: 'Audit', icon: FileSearch, href: '/audit' },
     ],
     secondary: [
