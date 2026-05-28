@@ -9,11 +9,13 @@ import { PersonaSwitcher } from './PersonaSwitcher';
 export function Topbar() {
   return (
     <header className="h-12 border-b border-border bg-background-subtle flex items-center px-4 gap-3 shrink-0">
-      <Link href="/" className="flex items-center gap-2 group">
-        <div className="size-6 rounded-md bg-foreground flex items-center justify-center transition-transform group-hover:scale-105">
-          <span className="text-background text-[10px] font-bold">S</span>
-        </div>
-        <span className="text-sm font-medium tracking-tight">Studio</span>
+      <Link href="/" className="flex items-center group" aria-label="Eltropy — home">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/eltropy-logo.png"
+          alt="Eltropy"
+          className="h-8 w-auto transition-transform group-hover:scale-105"
+        />
       </Link>
 
       <Popover.Root>

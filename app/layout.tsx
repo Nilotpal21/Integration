@@ -5,7 +5,7 @@ import { AppShell } from '@/components/shell/AppShell';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Studio — Agentic AI Platform for Credit Unions',
+  title: 'Eltropy — Agentic AI Platform for Credit Unions',
   description:
     'Upload your SOP. The platform builds the agentic app. An AI Helper guides you. Evaluation runs continuously.',
 };
