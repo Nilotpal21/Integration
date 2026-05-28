@@ -12,3 +12,4 @@ export * from './approvals';
 export * from './mission-control';
 export * from './audit';
 export * from './knowledge';
+export * from './models';
