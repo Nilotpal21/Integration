@@ -40,7 +40,7 @@ interface NavGroup {
 const NAV: Record<'processOwner' | 'reviewer' | 'admin', NavGroup> = {
   processOwner: {
     primary: [
-      { id: 'home', label: 'Home', icon: LayoutDashboard, href: '/' },
+      { id: 'projects', label: 'Projects', icon: LayoutDashboard, href: '/projects', count: 4 },
       { id: 'sops', label: 'SOPs', icon: FileText, href: '/sops', count: 4 },
       { id: 'apps', label: 'Apps', icon: Bot, href: '/apps', count: 5 },
       { id: 'evaluations', label: 'Evaluations', icon: LineChart, href: '/evaluations' },

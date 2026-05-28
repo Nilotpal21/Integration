@@ -36,7 +36,7 @@ export const personas: Record<'processOwner' | 'reviewer' | 'admin', Persona> = 
     role: 'Process Owner',
     initials: 'DU',
     avatarHue: 'purple',
-    home: '/',
+    home: '/projects',
   },
   reviewer: {
     id: 'u_rs',

@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   const handleSSO = () => {
     signIn('sso');
-    router.push('/');
+    router.push('/projects');
   };
 
   const handlePasswordSubmit = (e: FormEvent) => {
@@ -31,7 +31,7 @@ export default function LoginPage() {
     e.preventDefault();
     if (otp.length === 6) {
       signIn('password');
-      router.push('/');
+      router.push('/projects');
     }
   };
 

@@ -28,6 +28,8 @@ import {
   getSubAgentById,
   getFlagsForSOP,
   getReviewStudioContext,
+  projectAppMap,
+  getProjectById,
   type Channel,
   type AppStatus,
 } from '@/lib/mock-data';
@@ -72,6 +74,7 @@ export default async function ReviewStudioPage({ params }: PageProps) {
   const context = getReviewStudioContext(app.id);
   const subAgents = app.subAgents.map((id) => getSubAgentById(id)).filter(Boolean);
   const s = statusStyle[app.status];
+  const project = getProjectById(projectAppMap[app.id]);
 
   const blockers = flags.filter((f) => f.severity === 'blocker' && !f.acknowledged).length;
   const warnings = flags.filter((f) => f.severity === 'warning' && !f.acknowledged).length;
@@ -81,6 +84,17 @@ export default async function ReviewStudioPage({ params }: PageProps) {
   return (
     <div className="space-y-5">
       <nav className="text-xs text-foreground-muted flex items-center gap-2">
+        {project && (
+          <>
+            <Link
+              href={`/projects/${project.id}`}
+              className="hover:text-foreground transition-colors"
+            >
+              {project.name}
+            </Link>
+            <span className="text-foreground-subtle">/</span>
+          </>
+        )}
         <Link href="/apps" className="hover:text-foreground transition-colors">
           Apps
         </Link>

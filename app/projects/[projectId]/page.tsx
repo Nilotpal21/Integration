@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight, Sparkles, Settings as SettingsIcon } from 'lucide-react';
+import { ArrowUpRight, Sparkles, Settings as SettingsIcon, Upload } from 'lucide-react';
+import { SyncActiveProject } from '@/components/projects/SyncActiveProject';
 import {
   getProjectById,
   projects,
@@ -33,6 +34,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
+      <SyncActiveProject projectId={project.id} />
+
       <nav className="text-xs text-foreground-muted flex items-center gap-2">
         <Link href="/projects" className="hover:text-foreground transition-colors">
           Projects
@@ -41,8 +44,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <span className="text-foreground">{project.name}</span>
       </nav>
 
-      <header className="flex items-end justify-between">
-        <div>
+      <header className="flex items-end justify-between gap-4">
+        <div className="min-w-0">
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl font-semibold tracking-tight">{project.name}</h1>
             <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wide font-medium bg-success-subtle text-success">
@@ -58,7 +61,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             {project.defaultChannels.join(', ')}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             href={`/projects/${project.id}/settings`}
             className="h-8 px-3 rounded-md text-xs font-medium border border-border-muted text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors flex items-center gap-1.5"
@@ -66,13 +69,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <SettingsIcon className="size-3.5" />
             Settings
           </Link>
-          <button
-            type="button"
-            className="h-8 px-3 rounded-md text-xs font-medium bg-purple/15 text-purple hover:bg-purple/20 transition-colors flex items-center gap-1.5"
+          <Link
+            href="/sops/new"
+            className="h-8 px-3 rounded-md text-xs font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center gap-1.5"
           >
-            <Sparkles className="size-3.5" />
-            Ask Helper
-          </button>
+            <Upload className="size-3.5" />
+            Upload SOP into {project.name}
+          </Link>
         </div>
       </header>
 

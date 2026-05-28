@@ -11,10 +11,12 @@ import {
   Sparkles,
   ArrowRight,
 } from 'lucide-react';
-import { recentSOPs } from '@/lib/mock-data';
+import { recentSOPs, getProjectById } from '@/lib/mock-data';
+import { useActiveProjectId } from '@/lib/persona';
 import { ParsingAnimation } from '@/components/sops/ParsingAnimation';
 import { Footer } from '@/components/shell/Footer';
 import { cn } from '@/lib/utils';
+import { FolderKanban } from 'lucide-react';
 
 type Tab = 'upload' | 'paste' | 'url';
 
@@ -22,6 +24,8 @@ const FORMAT_CHIPS = ['PDF', 'DOCX', 'MD', 'HTML', 'TXT'];
 
 export default function NewSOPPage() {
   const router = useRouter();
+  const activeProjectId = useActiveProjectId();
+  const activeProject = getProjectById(activeProjectId);
   const [tab, setTab] = useState<Tab>('upload');
   const [parsing, setParsing] = useState(false);
 
@@ -35,14 +39,47 @@ export default function NewSOPPage() {
 
   return (
     <div className="space-y-6">
-      <header>
+      <nav className="text-xs text-foreground-muted flex items-center gap-2">
+        {activeProject && (
+          <>
+            <Link
+              href={`/projects/${activeProject.id}`}
+              className="hover:text-foreground transition-colors"
+            >
+              {activeProject.name}
+            </Link>
+            <span className="text-foreground-subtle">/</span>
+          </>
+        )}
+        <Link href="/sops" className="hover:text-foreground transition-colors">
+          SOPs
+        </Link>
+        <span className="text-foreground-subtle">/</span>
+        <span className="text-foreground">Upload</span>
+      </nav>
+
+      <header className="flex flex-col gap-3">
+        <div className="inline-flex items-center gap-2 text-[11px] text-purple bg-purple/10 border border-purple/20 rounded-md px-2.5 py-1.5 self-start">
+          <FolderKanban className="size-3.5" />
+          <span>
+            Uploading into{' '}
+            <span className="font-medium text-foreground">
+              {activeProject?.name ?? 'no active project'}
+            </span>
+          </span>
+          <span className="text-foreground-subtle">·</span>
+          <span className="text-foreground-muted">switch project from the top bar</span>
+        </div>
         <h1 className="text-2xl font-semibold tracking-tight">
           Bring your SOP. We&apos;ll build the app.
         </h1>
-        <p className="text-sm text-foreground-muted mt-2 max-w-2xl">
+        <p className="text-sm text-foreground-muted max-w-2xl">
           Upload a Standard Operating Procedure. The platform reads it, applies credit-union
-          expertise, and generates a working agentic app. The AI Helper walks you through every
-          step.
+          expertise, and generates a working agentic app for{' '}
+          <span className="font-medium text-foreground">
+            {activeProject?.name ?? 'this project'}
+          </span>
+          . The AI Helper walks you through every step.
         </p>
       </header>
 

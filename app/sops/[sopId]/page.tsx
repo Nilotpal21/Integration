@@ -12,6 +12,8 @@ import {
   getFlagsForSOP,
   apps as appsList,
   sops,
+  projectSOPMap,
+  getProjectById,
 } from '@/lib/mock-data';
 import { AttachedComponentsGrid } from '@/components/sops/AttachedComponentsGrid';
 import { QualityCheckFlags } from '@/components/sops/QualityCheckFlags';
@@ -33,10 +35,22 @@ export default async function SOPDetailPage({ params }: PageProps) {
   const flags = getFlagsForSOP(sop.id);
   const app = appsList.find((a) => a.id === sop.appsGenerated[0]);
   const hasBlocker = sop.blockerFlags > 0;
+  const project = getProjectById(projectSOPMap[sop.id]);
 
   return (
     <div className="space-y-6">
       <nav className="text-xs text-foreground-muted flex items-center gap-2">
+        {project && (
+          <>
+            <Link
+              href={`/projects/${project.id}`}
+              className="hover:text-foreground transition-colors"
+            >
+              {project.name}
+            </Link>
+            <span className="text-foreground-subtle">/</span>
+          </>
+        )}
         <Link href="/sops" className="hover:text-foreground transition-colors">
           SOPs
         </Link>
