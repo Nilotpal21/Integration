@@ -18,6 +18,8 @@ import {
   Cpu,
   Users,
   Settings2,
+  Rocket,
+  MessagesSquare,
   ChevronLeft,
   type LucideIcon,
 } from 'lucide-react';
@@ -45,7 +47,9 @@ const NAV: Record<'processOwner' | 'reviewer' | 'admin', NavGroup> = {
       { id: 'overview', label: 'Overview', icon: LayoutDashboard, href: '/' },
       { id: 'sops', label: 'SOPs', icon: FileText, href: '/sops' },
       { id: 'apps', label: 'Apps', icon: Bot, href: '/apps' },
+      { id: 'chat', label: 'Chat', icon: MessagesSquare, href: '/chat' },
       { id: 'evaluations', label: 'Evaluations', icon: LineChart, href: '/evaluations' },
+      { id: 'deployments', label: 'Deployments', icon: Rocket, href: '/deployments' },
       { id: 'knowledge', label: 'Knowledge', icon: Database, href: '/knowledge', count: 12 },
       { id: 'marketplace', label: 'Marketplace', icon: Store, href: '/marketplace' },
     ],
@@ -67,6 +71,7 @@ const NAV: Record<'processOwner' | 'reviewer' | 'admin', NavGroup> = {
   admin: {
     primary: [
       { id: 'mc', label: 'Mission Control', icon: Activity, href: '/mission-control' },
+      { id: 'deployments', label: 'Deployments', icon: Rocket, href: '/deployments' },
       { id: 'audit', label: 'Audit', icon: FileSearch, href: '/audit' },
       { id: 'knowledge', label: 'Knowledge', icon: Database, href: '/knowledge', count: 12 },
       { id: 'models', label: 'Models', icon: Cpu, href: '/models', count: 7 },
@@ -111,11 +116,12 @@ export function Sidebar() {
 
       <nav className="flex-1 px-2 py-3 space-y-0.5">
         {primary.map((item) => {
-          // Process Owner's "Overview" item links to the active project's home.
-          const href =
-            isProcessOwner && item.id === 'overview' && project
-              ? `/projects/${project.id}`
-              : item.href;
+          // Process Owner's "Overview" and "Chat" items are project-scoped.
+          let href = item.href;
+          if (isProcessOwner && project) {
+            if (item.id === 'overview') href = `/projects/${project.id}`;
+            if (item.id === 'chat') href = `/projects/${project.id}/chat`;
+          }
           return (
             <NavRow
               key={item.id}

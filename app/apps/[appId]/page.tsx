@@ -2,15 +2,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
   Bot,
-  Send,
   CheckCircle2,
   AlertOctagon,
   AlertTriangle,
   Lightbulb,
-  ShieldCheck,
-  Shield,
-  Lock,
-  PencilLine,
   Plus,
   MessageSquare,
   Phone,
@@ -18,7 +13,6 @@ import {
   Smartphone,
   Database,
   Wrench,
-  ExternalLink,
   ArrowUpRight,
   type LucideIcon,
 } from 'lucide-react';
@@ -31,23 +25,34 @@ import {
   projectAppMap,
   getProjectById,
   type Channel,
-  type AppStatus,
 } from '@/lib/mock-data';
 import { EvalCard } from '@/components/review-studio/EvalCard';
 import { SandboxPreview } from '@/components/review-studio/SandboxPreview';
 import { HelperCard } from '@/components/review-studio/HelperCard';
 import { Panel } from '@/components/review-studio/Panel';
 import { SubmitForApprovalButton } from '@/components/review-studio/SubmitForApprovalButton';
+import {
+  AppHeaderActions,
+  AppStatusBadge,
+  AppVersionTag,
+} from '@/components/review-studio/AppHeaderActions';
+import { MemoryPanel } from '@/components/review-studio/MemoryPanel';
+import { AudiencePanel } from '@/components/review-studio/AudiencePanel';
+import { GuardrailsPanel } from '@/components/review-studio/GuardrailsPanel';
+import { AppSpec } from '@/components/apps/AppSpec';
 import { Footer } from '@/components/shell/Footer';
 import { cn } from '@/lib/utils';
 
 interface PageProps {
   params: Promise<{ appId: string }>;
+  searchParams: Promise<{ view?: string }>;
 }
 
 export function generateStaticParams() {
   return apps.map((a) => ({ appId: a.id }));
 }
+
+type AppView = 'studio' | 'spec';
 
 const channelLabel: Record<Channel, { icon: LucideIcon; label: string }> = {
   digital: { icon: MessageSquare, label: 'Digital' },
@@ -56,25 +61,19 @@ const channelLabel: Record<Channel, { icon: LucideIcon; label: string }> = {
   email: { icon: Mail, label: 'Email' },
 };
 
-const statusStyle: Record<AppStatus, { bg: string; text: string; dot: string; label: string }> = {
-  draft: { bg: 'bg-background-elevated', text: 'text-foreground-muted', dot: 'bg-foreground-subtle', label: 'Draft' },
-  in_review: { bg: 'bg-info-subtle', text: 'text-info', dot: 'bg-info', label: 'In review' },
-  changes_requested: { bg: 'bg-warning-subtle', text: 'text-warning', dot: 'bg-warning', label: 'Changes requested' },
-  approved: { bg: 'bg-success-subtle', text: 'text-success', dot: 'bg-success', label: 'Approved' },
-  deployed: { bg: 'bg-success-subtle', text: 'text-success', dot: 'bg-success', label: 'Deployed' },
-  paused: { bg: 'bg-warning-subtle', text: 'text-warning', dot: 'bg-warning', label: 'Paused' },
-};
-
-export default async function ReviewStudioPage({ params }: PageProps) {
+export default async function ReviewStudioPage({ params, searchParams }: PageProps) {
   const { appId } = await params;
+  const { view: rawView } = await searchParams;
+  const view: AppView = rawView === 'spec' ? 'spec' : 'studio';
   const app = apps.find((a) => a.id === appId);
   if (!app) notFound();
 
   const sop = getSOPById(app.sopId);
   const flags = sop ? getFlagsForSOP(sop.id) : [];
   const context = getReviewStudioContext(app.id);
-  const subAgents = app.subAgents.map((id) => getSubAgentById(id)).filter(Boolean);
-  const s = statusStyle[app.status];
+  const subAgents = app.subAgents
+    .map((id) => getSubAgentById(id))
+    .filter((sa): sa is NonNullable<typeof sa> => Boolean(sa));
   const project = getProjectById(projectAppMap[app.id]);
 
   const blockers = flags.filter((f) => f.severity === 'blocker' && !f.acknowledged).length;
@@ -111,48 +110,56 @@ export default async function ReviewStudioPage({ params }: PageProps) {
               <Bot className="size-4 text-foreground-muted" />
             </div>
             <h1 className="text-lg font-mono tracking-tight">{app.name}</h1>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-background-elevated text-foreground-muted">
-              v{app.deployedVersion + 1}
-            </span>
-            <span
-              className={cn(
-                'inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wide font-medium',
-                s.bg,
-                s.text,
-              )}
-            >
-              <span className={cn('size-1.5 rounded-full', s.dot)} />
-              {s.label}
-            </span>
+            <AppVersionTag appId={app.id} fallbackVersion={app.deployedVersion} />
+            <AppStatusBadge appId={app.id} fallback={app.status} />
           </div>
           <p className="text-[11px] text-foreground-muted font-mono mt-1.5">
             from SOP: {app.sopFilename} · last evaluated {app.lastEvaluatedAt}
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            className="h-8 px-3 rounded-md text-xs text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors"
-          >
-            Discard changes
-          </button>
-          <SubmitForApprovalButton
-            appName={app.name}
-            appId={app.id}
-            sopReason={`Submission for ${app.sopFilename}, evaluation score ${app.evaluationScore}.`}
-            guardrailsCount={sop?.attachedGuardrails.length ?? 0}
-            knowledgeCount={sop?.attachedKnowledge.length ?? 0}
-            blockers={blockers}
-            warnings={warnings}
-            evaluationScore={app.evaluationScore}
-            approvalsRequired={app.approvalsRequired}
-            canSubmit={canSubmit}
-          />
-        </div>
+        <AppHeaderActions
+          appId={app.id}
+          appName={app.name}
+          sopFilename={app.sopFilename}
+          evaluationScore={app.evaluationScore}
+          approvalsRequired={app.approvalsRequired}
+          guardrailsCount={sop?.attachedGuardrails.length ?? 0}
+          knowledgeCount={sop?.attachedKnowledge.length ?? 0}
+          blockers={blockers}
+          warnings={warnings}
+        />
       </header>
 
-      {/* Main + right rail */}
+      {/* View tabs */}
+      <div className="flex items-center gap-1 border-b border-border-muted -mt-2">
+        {(['studio', 'spec'] as const).map((id) => {
+          const label = id === 'studio' ? 'Studio' : 'Spec';
+          const isActive = view === id;
+          const href = id === 'studio' ? `/apps/${app.id}` : `/apps/${app.id}?view=spec`;
+          return (
+            <Link
+              key={id}
+              href={href}
+              className={cn(
+                'px-3 py-2 text-xs font-medium border-b-2 -mb-px transition-colors',
+                isActive
+                  ? 'border-foreground text-foreground'
+                  : 'border-transparent text-foreground-muted hover:text-foreground',
+              )}
+            >
+              {label}
+            </Link>
+          );
+        })}
+      </div>
+
+      {view === 'spec' && (
+        <AppSpec app={app} sop={sop} subAgents={subAgents} />
+      )}
+
+      {view === 'studio' && (
+      /* Main + right rail */
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-5">
         {/* Main canvas */}
         <div className="space-y-3 min-w-0">
@@ -249,37 +256,10 @@ export default async function ReviewStudioPage({ params }: PageProps) {
             subtitle={`${sop?.attachedGuardrails.length ?? 0} guardrails active`}
             helperHint="Suggest a custom guardrail for this app"
           >
-            <p className="text-[11px] text-foreground-muted mb-3">
-              Baseline credit-union guardrails are applied automatically and cannot be removed.
-            </p>
-            <ul className="space-y-1.5">
-              {(sop?.attachedGuardrails ?? []).slice(0, 6).map((g, i) => {
-                const baseline = i < 4;
-                return (
-                  <li
-                    key={g}
-                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md bg-background-muted/40 border border-border-muted text-xs"
-                  >
-                    {baseline ? (
-                      <Lock className="size-3.5 text-foreground-subtle shrink-0" />
-                    ) : (
-                      <PencilLine className="size-3.5 text-foreground-muted shrink-0" />
-                    )}
-                    <span className="flex-1 truncate">{g}</span>
-                    <span className="text-[10px] uppercase tracking-wide text-foreground-meta">
-                      {baseline ? 'Baseline' : 'Custom'}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-            <button
-              type="button"
-              className="mt-3 h-7 px-2.5 rounded-md text-[11px] font-medium border border-border-muted text-foreground-muted hover:bg-background-elevated hover:text-foreground transition-colors flex items-center gap-1"
-            >
-              <Plus className="size-3" />
-              Add a custom guardrail
-            </button>
+            <GuardrailsPanel
+              appId={app.id}
+              baselineGuardrails={(sop?.attachedGuardrails ?? []).slice(0, 6)}
+            />
           </Panel>
 
           {/* Panel 5: What it can touch */}
@@ -316,40 +296,7 @@ export default async function ReviewStudioPage({ params }: PageProps) {
             subtitle="Memory mode applied to this app."
             helperHint="Why is session memory the default here?"
           >
-            <div className="space-y-2">
-              {[
-                { v: 'none', label: 'None', sub: 'No memory across turns.' },
-                { v: 'session', label: 'Session', sub: 'Remembers within one conversation.', recommended: true },
-                {
-                  v: 'long',
-                  label: 'Long-term',
-                  sub: 'Requires explicit member consent · follows GLBA disclosure rules.',
-                },
-              ].map((opt) => (
-                <label
-                  key={opt.v}
-                  className="flex items-start gap-3 px-3 py-2 rounded-md border border-border-muted hover:border-border cursor-pointer transition-colors"
-                >
-                  <input
-                    type="radio"
-                    name="memory"
-                    defaultChecked={opt.recommended}
-                    className="mt-0.5 size-3.5 accent-foreground"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-medium">{opt.label}</span>
-                      {opt.recommended && (
-                        <span className="text-[10px] uppercase tracking-wide bg-success-subtle text-success px-1.5 py-0.5 rounded font-medium">
-                          Recommended
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-foreground-muted mt-0.5">{opt.sub}</p>
-                  </div>
-                </label>
-              ))}
-            </div>
+            <MemoryPanel appId={app.id} />
           </Panel>
 
           {/* Panel 7: SOP issues */}
@@ -430,24 +377,7 @@ export default async function ReviewStudioPage({ params }: PageProps) {
                 <div className="text-[10px] uppercase tracking-wide text-foreground-meta font-medium mb-1.5">
                   Audience
                 </div>
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-2 text-xs cursor-pointer">
-                    <input
-                      type="radio"
-                      name="audience"
-                      defaultChecked
-                      className="size-3.5 accent-foreground"
-                    />
-                    All members
-                  </label>
-                  <label className="flex items-center gap-2 text-xs cursor-pointer text-foreground-muted">
-                    <input type="radio" name="audience" className="size-3.5 accent-foreground" />
-                    Members in segment…
-                  </label>
-                </div>
-                <p className="text-[11px] text-foreground-subtle mt-2">
-                  Estimated audience size: 47,200 members
-                </p>
+                <AudiencePanel appId={app.id} />
               </div>
             </div>
           </Panel>
@@ -508,6 +438,7 @@ export default async function ReviewStudioPage({ params }: PageProps) {
           <HelperCard suggestions={context.helperSuggestions} appName={app.name} />
         </aside>
       </div>
+      )}
 
       <Footer />
     </div>

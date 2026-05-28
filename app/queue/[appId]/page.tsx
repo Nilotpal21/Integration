@@ -82,6 +82,7 @@ export default async function ReviewerDetailPage({ params }: PageProps) {
         </div>
         {!isDecided ? (
           <DecisionButtons
+            appId={app.id}
             appName={submission.appName}
             hasBlocker={submission.blockerFlags > 0}
             isCoReviewer={submission.status === 'pending_co_reviewer'}

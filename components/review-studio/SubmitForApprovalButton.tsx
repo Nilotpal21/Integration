@@ -6,6 +6,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Send, CheckCircle2, AlertTriangle, AlertOctagon, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { personas } from '@/lib/mock-data';
+import { useAppState } from '@/lib/app-state';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -34,10 +35,12 @@ export function SubmitForApprovalButton({
   canSubmit,
 }: Props) {
   const router = useRouter();
+  const submitForApproval = useAppState((s) => s.submitForApproval);
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState('');
 
   const handleConfirm = () => {
+    submitForApproval(appId);
     setOpen(false);
     toast.success(`Submitted to compliance review · ${approvalsRequired} reviewers notified`);
     setTimeout(() => router.push(`/queue/${appId}?from=submit`), 400);

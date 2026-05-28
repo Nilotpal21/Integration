@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Check, X, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAppState } from '@/lib/app-state';
 import { cn } from '@/lib/utils';
 
 interface Props {
+  appId: string;
   appName: string;
   hasBlocker: boolean;
   isCoReviewer?: boolean;
@@ -15,8 +17,11 @@ interface Props {
 
 type Action = 'approve' | 'changes' | 'reject' | null;
 
-export function DecisionButtons({ appName, hasBlocker, isCoReviewer }: Props) {
+export function DecisionButtons({ appId, appName, hasBlocker, isCoReviewer }: Props) {
   const router = useRouter();
+  const approve = useAppState((s) => s.approve);
+  const requestChanges = useAppState((s) => s.requestChanges);
+  const reject = useAppState((s) => s.reject);
   const [action, setAction] = useState<Action>(null);
   const [comment, setComment] = useState('');
   const [acknowledgeReject, setAcknowledgeReject] = useState(false);
@@ -29,10 +34,13 @@ export function DecisionButtons({ appName, hasBlocker, isCoReviewer }: Props) {
 
   const handleConfirm = () => {
     if (action === 'approve') {
+      approve(appId);
       toast.success(`Approved · ${appName} is ready to deploy`);
     } else if (action === 'changes') {
+      requestChanges(appId);
       toast.success(`Changes requested · the Process Owner has been notified`);
     } else if (action === 'reject') {
+      reject(appId);
       toast.error(`Rejected · ${appName} is back to Draft`);
     }
     close();

@@ -57,11 +57,18 @@ export function SourceCard({
   const status = statusStyle[source.status];
 
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       className={cn(
-        'text-left rounded-lg border bg-background-subtle hover:bg-background-muted/40 transition-colors p-4 flex flex-col gap-3',
+        'text-left rounded-lg border bg-background-subtle hover:bg-background-muted/40 transition-colors p-4 flex flex-col gap-3 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-border-focus/60',
         source.status === 'error'
           ? 'border-error/30 hover:border-error/50'
           : 'border-border-muted hover:border-border',
@@ -166,7 +173,7 @@ export function SourceCard({
           <RefreshCw className="size-3" />
         </button>
       </div>
-    </button>
+    </div>
   );
 }
 
