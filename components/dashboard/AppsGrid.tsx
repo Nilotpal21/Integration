@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Bot,
@@ -11,7 +13,8 @@ import {
   Minus,
   type LucideIcon,
 } from 'lucide-react';
-import { apps, type AppStatus, type Channel, type App } from '@/lib/mock-data';
+import { apps, projectAppMap, type AppStatus, type Channel, type App } from '@/lib/mock-data';
+import { useActiveProjectId } from '@/lib/persona';
 import { cn } from '@/lib/utils';
 
 const statusStyle: Record<AppStatus, { dot: string; label: string; pillBg: string; pillText: string }> = {
@@ -79,13 +82,16 @@ function scoreClass(score: number): string {
 }
 
 export function AppsGrid() {
+  const activeProjectId = useActiveProjectId();
+  const projectApps = apps.filter((a) => projectAppMap[a.id] === activeProjectId);
+
   return (
     <section>
       <div className="flex items-end justify-between mb-3">
         <div>
-          <h2 className="text-sm font-semibold">Your apps</h2>
+          <h2 className="text-sm font-semibold">Apps in this project</h2>
           <p className="text-xs text-foreground-muted mt-0.5">
-            {apps.length} apps across your workspace
+            {projectApps.length} apps · {apps.length} across the workspace
           </p>
         </div>
         <Link
@@ -98,7 +104,12 @@ export function AppsGrid() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {apps.map((a) => (
+        {projectApps.length === 0 && (
+          <p className="col-span-full text-xs text-foreground-muted text-center py-8 border border-dashed border-border-muted rounded-lg">
+            No apps in this project yet. Upload an SOP to generate one.
+          </p>
+        )}
+        {projectApps.map((a) => (
           <AppCard key={a.id} app={a} />
         ))}
       </div>

@@ -5,6 +5,7 @@ import * as Popover from '@radix-ui/react-popover';
 import Link from 'next/link';
 import { tenant } from '@/lib/mock-data';
 import { PersonaSwitcher } from './PersonaSwitcher';
+import { ProjectSwitcher } from './ProjectSwitcher';
 
 export function Topbar() {
   return (
@@ -51,7 +52,11 @@ export function Topbar() {
         </Popover.Portal>
       </Popover.Root>
 
-      <div className="flex-1 max-w-md mx-auto relative">
+      <span className="text-foreground-subtle text-xs">/</span>
+
+      <ProjectSwitcher />
+
+      <div className="flex-1 max-w-sm mx-auto relative">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-foreground-subtle pointer-events-none" />
         <input
           placeholder="Search SOPs, apps, evaluations, knowledge…"

@@ -1,11 +1,38 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { Topbar } from './Topbar';
 import { Sidebar } from './Sidebar';
 import { FloatingHelperButton } from '@/components/helper/FloatingHelperButton';
+import { useAuth } from '@/lib/auth';
+
+const PRE_AUTH_ROUTES = ['/login', '/forgot-password', '/reset-password', '/invite', '/auth'];
+
+function isPreAuthRoute(pathname: string): boolean {
+  return PRE_AUTH_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`));
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const isAuthenticated = useAuth((s) => s.isAuthenticated);
+  const pathname = usePathname();
+  const router = useRouter();
+  const preAuth = isPreAuthRoute(pathname);
+
+  useEffect(() => {
+    if (!isAuthenticated && !preAuth) {
+      router.replace('/login');
+    }
+  }, [isAuthenticated, preAuth, router]);
+
+  if (preAuth) {
+    return <>{children}</>;
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <Topbar />

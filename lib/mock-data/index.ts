@@ -5,3 +5,4 @@ export * from './dashboard';
 export * from './sops';
 export * from './sub-agents';
 export * from './sop-flags';
+export * from './projects';

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   CheckCircle2,
   AlertTriangle,
@@ -12,7 +14,8 @@ import {
   Inbox,
   type LucideIcon,
 } from 'lucide-react';
-import { activity, type EventKind, type ActivitySeverity } from '@/lib/mock-data';
+import { activity, projectAppMap, type EventKind, type ActivitySeverity } from '@/lib/mock-data';
+import { useActiveProjectId } from '@/lib/persona';
 import { cn } from '@/lib/utils';
 
 const iconForKind: Record<EventKind, LucideIcon> = {
@@ -38,13 +41,18 @@ const severityClass: Record<ActivitySeverity, string> = {
 };
 
 export function ActivityFeed() {
+  const activeProjectId = useActiveProjectId();
+  const filtered = activity.filter((a) => projectAppMap[a.appId] === activeProjectId);
+
   return (
     <section className="rounded-lg border border-border-muted bg-background-subtle overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-muted">
         <div>
           <h2 className="text-sm font-semibold">Recent activity</h2>
           <p className="text-xs text-foreground-muted mt-0.5">
-            Last 8 events across your apps
+            {filtered.length === 0
+              ? 'No recent events in this project'
+              : `${filtered.length} recent events in this project`}
           </p>
         </div>
         <button
@@ -56,7 +64,12 @@ export function ActivityFeed() {
       </div>
 
       <div className="divide-y divide-border-muted">
-        {activity.map((a) => {
+        {filtered.length === 0 && (
+          <p className="px-4 py-8 text-xs text-foreground-muted text-center">
+            Switch to a project with deployed apps to see recent activity.
+          </p>
+        )}
+        {filtered.map((a) => {
           const Icon = iconForKind[a.kind] ?? Bot;
           return (
             <div

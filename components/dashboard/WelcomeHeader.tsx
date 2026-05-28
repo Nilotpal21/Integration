@@ -1,11 +1,14 @@
 'use client';
 
 import { Sparkles } from 'lucide-react';
-import { useActivePersona } from '@/lib/persona';
-import { tenant } from '@/lib/mock-data';
+import { useActivePersona, useActiveProjectId } from '@/lib/persona';
+import { tenant, getProjectById } from '@/lib/mock-data';
 
 export function WelcomeHeader() {
   const persona = useActivePersona();
+  const projectId = useActiveProjectId();
+  const project = getProjectById(projectId);
+
   return (
     <header className="flex items-end justify-between">
       <div>
@@ -13,7 +16,8 @@ export function WelcomeHeader() {
           Welcome back, {persona.firstName}
         </h1>
         <p className="text-xs text-foreground-muted mt-1">
-          {tenant.name} · 3 deployments in the last 7 days · 1 app awaiting your action
+          {tenant.name} · {project ? `${project.name} project` : 'no active project'} · 3
+          deployments in the last 7 days
         </p>
       </div>
       <button

@@ -5,6 +5,7 @@ import { Check, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { personas } from '@/lib/mock-data';
 import { usePersona, personaKeys } from '@/lib/persona';
+import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 const hueClasses: Record<string, string> = {
@@ -15,9 +16,16 @@ const hueClasses: Record<string, string> = {
 };
 
 export function PersonaSwitcher() {
-  const { activeKey, setActive } = usePersona();
+  const activeKey = usePersona((s) => s.activeKey);
+  const setActive = usePersona((s) => s.setActive);
+  const signOut = useAuth((s) => s.signOut);
   const active = personas[activeKey];
   const router = useRouter();
+
+  const handleSignOut = () => {
+    signOut();
+    router.push('/login');
+  };
 
   return (
     <DropdownMenu.Root>
@@ -73,8 +81,8 @@ export function PersonaSwitcher() {
           })}
           <DropdownMenu.Separator className="my-1 h-px bg-border-muted" />
           <DropdownMenu.Item
-            className="flex items-center gap-2.5 px-3 py-2 rounded-md text-xs text-foreground-muted cursor-pointer outline-none focus:bg-background-muted data-[highlighted]:bg-background-muted"
-            onSelect={(e) => e.preventDefault()}
+            onSelect={handleSignOut}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-md text-xs text-foreground-muted cursor-pointer outline-none focus:bg-background-muted data-[highlighted]:bg-background-muted hover:text-foreground"
           >
             <LogOut className="size-3.5" />
             Sign out

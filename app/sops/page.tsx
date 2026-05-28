@@ -1,17 +1,23 @@
+'use client';
+
 import Link from 'next/link';
 import { FileText, Plus, AlertOctagon, AlertTriangle, Lightbulb } from 'lucide-react';
-import { sops } from '@/lib/mock-data';
+import { sops, projectSOPMap, getProjectById } from '@/lib/mock-data';
+import { useActiveProjectId } from '@/lib/persona';
 import { Footer } from '@/components/shell/Footer';
 
 export default function SOPsPage() {
+  const activeProjectId = useActiveProjectId();
+  const project = getProjectById(activeProjectId);
+  const projectSops = sops.filter((s) => projectSOPMap[s.id] === activeProjectId);
+
   return (
     <div className="space-y-6">
       <header className="flex items-end justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">SOPs</h1>
           <p className="text-xs text-foreground-muted mt-1">
-            {sops.length} Standard Operating Procedures uploaded · the basis for every generated
-            app.
+            {projectSops.length} SOPs in the {project?.name ?? 'active'} project · the basis for every generated app.
           </p>
         </div>
         <Link
@@ -32,7 +38,12 @@ export default function SOPsPage() {
           <div className="text-right">Uploaded</div>
         </div>
 
-        {sops.map((sop) => {
+        {projectSops.length === 0 && (
+          <p className="px-4 py-8 text-xs text-foreground-muted text-center">
+            No SOPs in this project yet. Click <span className="font-medium">Upload SOP</span> to add one.
+          </p>
+        )}
+        {projectSops.map((sop) => {
           const appId = sop.appsGenerated[0];
           return (
             <Link
