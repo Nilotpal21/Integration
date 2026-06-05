@@ -44,15 +44,15 @@ export function Topbar() {
             </div>
             <div className="space-y-1">
               <NotificationRow
-                title="hardship-assist needs your co-approval"
+                title="HubSpot EU Analytics was revoked and needs reauthorization"
                 ago="2 min ago"
               />
               <NotificationRow
-                title="Continuous evaluation flagged a 4-point drop on Reg E disclosure"
+                title="Sandbox test failed for Salesforce Sandbox after the latest connector change"
                 ago="14 min ago"
               />
               <NotificationRow
-                title="Helper suggestion ready: improve Hardship eligibility logic"
+                title="Mode hub default generation model was updated to Claude Sonnet 4.6"
                 ago="32 min ago"
               />
             </div>

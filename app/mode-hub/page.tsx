@@ -63,23 +63,20 @@ export default function ModeHubPage() {
   }, [models, provider, query]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground-subtle">
-            Mode hub
-          </div>
-          <h1 className="mt-1 text-[24px] font-semibold tracking-tight text-foreground">
+          <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
             Commercial models
           </h1>
-          <p className="mt-1.5 max-w-3xl text-[14px] leading-6 text-foreground-muted">
-            Configure API-key-backed model endpoints that are exposed in connector setup. These enabled configurations drive provider and model choices during parsing and generation.
+          <p className="mt-1 max-w-3xl text-[14px] leading-6 text-foreground-muted">
+            Configure API-key-backed model endpoints exposed in connector setup, which drive provider and model choices during parsing and generation.
           </p>
         </div>
       </div>
 
       <div className="flex items-center justify-between gap-4">
-        <div className="ml-auto flex items-center gap-2.5">
+        <div className="ml-auto flex items-center gap-2">
           <label className="relative block w-[260px]">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-foreground-subtle" />
             <input
@@ -90,7 +87,7 @@ export default function ModeHubPage() {
             />
           </label>
 
-          <div className="w-[220px]">
+          <div className="w-[210px]">
             <PickerSelect
               value={provider}
               onChange={setProvider}
@@ -102,7 +99,7 @@ export default function ModeHubPage() {
           <button
             type="button"
             onClick={() => setEditor({ open: true })}
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-accent px-4 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent-muted"
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-accent px-3.5 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent-muted"
           >
             <Plus className="size-4" />
             Add model

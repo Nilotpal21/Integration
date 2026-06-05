@@ -1,10 +1,10 @@
 'use client';
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { Check, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { personas, tenant } from '@/lib/mock-data';
-import { usePersona, personaKeys } from '@/lib/persona';
+import { tenant } from '@/lib/mock-data';
+import { useActivePersona } from '@/lib/persona';
 import { useAuth } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
@@ -16,10 +16,8 @@ const hueClasses: Record<string, string> = {
 };
 
 export function PersonaSwitcher() {
-  const activeKey = usePersona((s) => s.activeKey);
-  const setActive = usePersona((s) => s.setActive);
   const signOut = useAuth((s) => s.signOut);
-  const active = personas[activeKey];
+  const active = useActivePersona();
   const router = useRouter();
 
   const handleSignOut = () => {
@@ -59,41 +57,24 @@ export function PersonaSwitcher() {
           </div>
           <DropdownMenu.Separator className="my-1 h-px bg-border-muted" />
           <div className="px-3 py-1.5 text-[10px] uppercase tracking-wide text-foreground-meta font-medium">
-            Switch persona
+            Account
           </div>
-          {personaKeys.map((key) => {
-            const p = personas[key];
-            const isActive = key === activeKey;
-            return (
-              <DropdownMenu.Item
-                key={key}
-                onSelect={() => {
-                  setActive(key);
-                  router.push(p.home);
-                }}
+          <div className="mx-1 rounded-lg bg-background-muted px-3 py-2">
+            <div className="flex items-center gap-2.5">
+              <span
                 className={cn(
-                  'flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs cursor-pointer outline-none transition-colors',
-                  isActive
-                    ? 'bg-background-muted'
-                    : 'focus:bg-background-muted data-[highlighted]:bg-background-muted',
+                  'size-7 rounded-full flex items-center justify-center text-[11px] font-medium shrink-0',
+                  hueClasses[active.avatarHue],
                 )}
               >
-                <span
-                  className={cn(
-                    'size-7 rounded-full flex items-center justify-center text-[11px] font-medium shrink-0',
-                    hueClasses[p.avatarHue],
-                  )}
-                >
-                  {p.initials}
-                </span>
-                <span className="flex-1 min-w-0">
-                  <span className="block text-[13px] font-medium text-foreground">{p.name}</span>
-                  <span className="block text-[11px] text-foreground-muted">{p.uiRole ?? p.role}</span>
-                </span>
-                {isActive && <Check className="size-3.5 text-foreground-muted shrink-0" />}
-              </DropdownMenu.Item>
-            );
-          })}
+                {active.initials}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[13px] font-medium text-foreground">{active.name}</span>
+                <span className="block text-[11px] text-foreground-muted">{active.uiRole ?? active.role}</span>
+              </span>
+            </div>
+          </div>
           <DropdownMenu.Separator className="my-1 h-px bg-border-muted" />
           <DropdownMenu.Item
             onSelect={handleSignOut}

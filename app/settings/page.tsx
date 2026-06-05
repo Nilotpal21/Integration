@@ -20,15 +20,15 @@ import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   const persona = useActivePersona();
-  const [helperMemory, setHelperMemory] = useState('conversation');
-  const [helperOpenMode, setHelperOpenMode] = useState('suggestions');
+  const [builderDefaultMode, setBuilderDefaultMode] = useState('scratch');
+  const [reviewLanding, setReviewLanding] = useState('summary');
   const [charterType, setCharterType] = useState(tenant.charter);
   const [dataResidency, setDataResidency] = useState('us-east');
   const [idleTimeout, setIdleTimeout] = useState('30');
   const [sessionLifetime, setSessionLifetime] = useState('8');
   const [auditRetention, setAuditRetention] = useState('7');
-  const [conversationTranscripts, setConversationTranscripts] = useState('90');
-  const [helperHistory, setHelperHistory] = useState('conversation');
+  const [connectorRunLogs, setConnectorRunLogs] = useState('90');
+  const [modeHubHistory, setModeHubHistory] = useState('90');
   const [sandboxDataRetention, setSandboxDataRetention] = useState('14');
 
   const isAdmin = persona.role === 'Credit Union Admin';
@@ -38,29 +38,26 @@ export default function SettingsPage() {
       <header className="pb-4 border-b border-border-muted">
         <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
         <p className="text-xs text-foreground-muted mt-1.5">
-          Manage your profile, notifications, and{' '}
-          {isAdmin ? 'tenant-wide' : 'app-author'} preferences.
+          Manage your profile, notifications, integration defaults, and{' '}
+          {isAdmin ? 'workspace-wide' : 'personal'} preferences.
         </p>
       </header>
 
       <Section
         icon={User}
         title="Profile"
-        description="Your identity within Eltropy. Federated from your CU's directory."
+        description="Your identity within cloudagle.ai and the integration workspace."
       >
         <FieldGrid>
           <Field label="Name">
-            <input
-              defaultValue={persona.name}
-              className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-3 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-            />
+            <div className="h-9 bg-background-muted/40 border border-border-muted rounded-md px-3 text-sm flex items-center text-foreground">
+              {persona.name}
+            </div>
           </Field>
           <Field label="Email">
-            <input
-              defaultValue={persona.email}
-              type="email"
-              className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-            />
+            <div className="h-9 bg-background-muted/40 border border-border-muted rounded-md px-3 text-sm font-mono flex items-center text-foreground">
+              {persona.email}
+            </div>
           </Field>
           <Field label="Role">
             <div className="h-9 bg-background-muted/40 border border-border-muted rounded-md px-3 text-sm flex items-center text-foreground-muted">
@@ -72,51 +69,37 @@ export default function SettingsPage() {
               <span className="size-9 rounded-full bg-purple/20 text-purple flex items-center justify-center text-xs font-medium">
                 {persona.initials}
               </span>
-              <button
-                type="button"
-                className="text-xs text-foreground-muted hover:text-foreground transition-colors"
-              >
-                Change
-              </button>
+              <span className="text-xs text-foreground-subtle">Managed by your account profile</span>
             </div>
           </Field>
         </FieldGrid>
-        <div className="mt-3">
-          <button
-            type="button"
-            onClick={() => toast.success('Profile saved')}
-            className="h-8 px-3 rounded-md text-xs font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors"
-          >
-            Save changes
-          </button>
-        </div>
       </Section>
 
       <Section
         icon={Bell}
         title="Notifications"
-        description="How and when you hear from Eltropy."
+        description="How and when you hear about connector activity and review events."
       >
         <div className="space-y-2.5">
           <Toggle
             label="In-app notifications"
-            description="Bell icon in the topbar — submission updates, evaluation results, Helper suggestions."
+            description="Bell icon updates for connector activation, revoke actions, and model configuration changes."
             defaultChecked
           />
           <Toggle
             label="Email notifications"
-            description="Daily digest of pending submissions and key events."
+            description="Daily digest of connector status changes, sandbox failures, and workspace events."
             defaultChecked
           />
           <Toggle
-            label="Mention me when the Helper proposes an action"
-            description="Get notified out-of-band when the Helper suggests something that needs your confirmation."
+            label="Notify me when a connector needs attention"
+            description="Get notified when a connector is revoked, fails sandbox validation, or requires reauthorization."
             defaultChecked={false}
           />
           {persona.role === 'Compliance Reviewer' && (
             <Toggle
-              label="Page me on high-risk submissions"
-              description="SMS notification for submissions touching money-moving tools or member NPI."
+              label="Page me on high-risk connector changes"
+              description="SMS notification for production-impacting lifecycle actions like revoke, delete, or credential rotation."
               defaultChecked
             />
           )}
@@ -125,44 +108,43 @@ export default function SettingsPage() {
 
       <Section
         icon={Sparkles}
-        title="AI Helper preferences"
-        description="Control how the Helper interacts with you."
+        title="Integration defaults"
+        description="Control how connector setup and review behave for your account."
       >
         <FieldGrid>
-          <Field label="Helper memory">
+          <Field label="Default creation mode">
             <PickerSelect
-              value={helperMemory}
-              onChange={(value) => setHelperMemory(value)}
+              value={builderDefaultMode}
+              onChange={(value) => setBuilderDefaultMode(value)}
               options={[
-                { value: 'conversation', label: 'This conversation only' },
-                { value: 'session', label: 'This session' },
-                { value: 'long', label: 'Long-term (90 days)' },
+                { value: 'scratch', label: 'Start from scratch' },
+                { value: 'template', label: 'Use existing template' },
               ]}
               triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
             />
           </Field>
-          <Field label="Helper opens with">
+          <Field label="Review landing">
             <PickerSelect
-              value={helperOpenMode}
-              onChange={(value) => setHelperOpenMode(value)}
+              value={reviewLanding}
+              onChange={(value) => setReviewLanding(value)}
               options={[
-                { value: 'suggestions', label: 'Contextual suggestions' },
-                { value: 'blank', label: 'A blank prompt' },
+                { value: 'summary', label: 'Parsed spec summary' },
+                { value: 'components', label: 'Components selection' },
+                { value: 'sandbox', label: 'Sandbox test step' },
               ]}
               triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
             />
           </Field>
         </FieldGrid>
         <Toggle
-          label="Show citations inline"
-          description="Display source citations beneath every Helper answer."
+          label="Require sandbox success before activation"
+          description="Prevent connector activation until the latest sandbox test passes."
           defaultChecked
         />
         <Toggle
-          label="Require confirmation for all Helper actions"
-          description="The Helper never bypasses approval workflows."
+          label="Warn before irreversible lifecycle actions"
+          description="Show confirmation before revoke and delete actions."
           defaultChecked
-          disabled
         />
       </Section>
 
@@ -170,24 +152,24 @@ export default function SettingsPage() {
         <>
           <Section
             icon={Building2}
-            title="Tenant settings"
-            description={`Tenant-wide configuration for ${tenant.name}.`}
+            title="Workspace settings"
+            description={`Workspace-wide configuration for ${tenant.name}.`}
             adminOnly
           >
             <FieldGrid>
-              <Field label="Credit union name">
+              <Field label="Workspace name">
                 <input
                   defaultValue={tenant.name}
                   className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-3 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
                 />
               </Field>
-              <Field label="Charter type">
+              <Field label="Workspace type">
                 <PickerSelect
                   value={charterType}
                   onChange={(value) => setCharterType(value as typeof charterType)}
                   options={[
-                    { value: 'federal', label: 'Federal' },
-                    { value: 'state', label: 'State' },
+                    { value: 'federal', label: 'Enterprise workspace' },
+                    { value: 'state', label: 'Sandbox workspace' },
                   ]}
                   triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
                 />
@@ -216,20 +198,20 @@ export default function SettingsPage() {
           <Section
             icon={KeyRound}
             title="Authentication & session"
-            description="Identity provider, MFA, and session lifetime."
+            description="Identity provider, MFA, and session controls for the platform."
             adminOnly
           >
             <FieldGrid>
               <Field label="SSO provider">
                 <div className="h-9 bg-background-muted/40 border border-border-muted rounded-md px-3 text-sm flex items-center text-foreground-muted gap-2">
                   <KeyRound className="size-3.5 text-foreground-subtle" />
-                  Cornerstone SSO · SAML 2.0
+                  Workspace SSO · SAML 2.0
                 </div>
               </Field>
               <Field label="MFA requirement">
                 <div className="h-9 bg-background-muted/40 border border-border-muted rounded-md px-3 text-sm flex items-center text-success gap-2">
                   <Shield className="size-3.5" />
-                  Mandatory (per FFIEC)
+                  Mandatory for all admins
                 </div>
               </Field>
               <Field label="Idle timeout">
@@ -261,7 +243,7 @@ export default function SettingsPage() {
             </FieldGrid>
             <Toggle
               label="Require step-up MFA for sensitive actions"
-              description="Approve, deploy, baseline-guardrail edits, credential rotation, membership changes."
+              description="Required for model changes, credential rotation, revoke actions, and workspace membership changes."
               defaultChecked
               disabled
             />
@@ -270,7 +252,7 @@ export default function SettingsPage() {
           <Section
             icon={Eye}
             title="Audit & retention"
-            description="How long the platform keeps record."
+            description="How long the platform keeps audit trails, logs, and sandbox artifacts."
             adminOnly
           >
             <FieldGrid>
@@ -287,10 +269,10 @@ export default function SettingsPage() {
                   triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
                 />
               </Field>
-              <Field label="Conversation transcripts">
+              <Field label="Connector run logs">
                 <PickerSelect
-                  value={conversationTranscripts}
-                  onChange={(value) => setConversationTranscripts(value)}
+                  value={connectorRunLogs}
+                  onChange={(value) => setConnectorRunLogs(value)}
                   options={[
                     { value: '30', label: '30 days' },
                     { value: '90', label: '90 days' },
@@ -299,19 +281,20 @@ export default function SettingsPage() {
                   triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
                 />
               </Field>
-              <Field label="Helper conversation history">
+              <Field label="Mode hub change history">
                 <PickerSelect
-                  value={helperHistory}
-                  onChange={(value) => setHelperHistory(value)}
+                  value={modeHubHistory}
+                  onChange={(value) => setModeHubHistory(value)}
                   options={[
-                    { value: 'conversation', label: 'This conversation only' },
+                    { value: '7', label: '7 days' },
                     { value: '30', label: '30 days' },
                     { value: '90', label: '90 days' },
+                    { value: '365', label: '1 year' },
                   ]}
                   triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
                 />
               </Field>
-              <Field label="Sandbox / synthetic data">
+              <Field label="Sandbox test artifacts">
                 <PickerSelect
                   value={sandboxDataRetention}
                   onChange={(value) => setSandboxDataRetention(value)}
@@ -328,24 +311,30 @@ export default function SettingsPage() {
         </>
       )}
 
-      {isAdmin && (
-        <Section
-          icon={Trash2}
-          title="Delete project"
-          description="Permanently delete this project and all of its apps, SOPs, evaluations, and audit history. This cannot be undone."
-        >
-          <button
-            type="button"
-            onClick={() => {
-              toast.error('Delete project is disabled in this prototype.');
-            }}
-            className="h-9 px-3.5 rounded-md text-xs font-medium border border-error/30 text-error hover:bg-error-subtle transition-colors flex items-center gap-1.5"
-          >
-            <Trash2 className="size-3.5" />
-            Delete project
-          </button>
-        </Section>
-      )}
+      <section className="space-y-3">
+        <header>
+          <h2 className="text-xl font-semibold tracking-tight text-error">Danger Zone</h2>
+          <p className="mt-1 text-xs text-foreground-muted">
+            High-impact project actions. These changes can affect every app and connector in the current project.
+          </p>
+        </header>
+
+        <div className="overflow-hidden rounded-lg border border-error/25 bg-background-subtle">
+          <DangerRow
+            title="Archive project"
+            description="Mark this project as archived and read-only for all apps and connectors under it."
+            actionLabel="Archive project"
+            onClick={() => toast.error('Archive project is disabled in this prototype.')}
+          />
+          <DangerRow
+            title="Delete project"
+            description="Permanently delete this project and all of its apps, connectors, connector activity, and audit history."
+            actionLabel="Delete project"
+            onClick={() => toast.error('Delete project is disabled in this prototype.')}
+            destructive
+          />
+        </div>
+      </section>
 
       <Footer />
     </div>
@@ -438,5 +427,40 @@ function Toggle({
         )}
       </div>
     </label>
+  );
+}
+
+function DangerRow({
+  title,
+  description,
+  actionLabel,
+  onClick,
+  destructive = false,
+}: {
+  title: string;
+  description: string;
+  actionLabel: string;
+  onClick: () => void;
+  destructive?: boolean;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-5 border-t border-error/15 px-5 py-5 first:border-t-0">
+      <div className="min-w-0">
+        <h3 className="text-base font-semibold tracking-tight text-foreground">{title}</h3>
+        <p className="mt-1 text-sm leading-relaxed text-foreground-muted max-w-3xl">{description}</p>
+      </div>
+      <button
+        type="button"
+        onClick={onClick}
+        className={cn(
+          'shrink-0 rounded-md border px-4 py-2 text-sm font-medium transition-colors',
+          destructive
+            ? 'border-error/30 text-error hover:bg-error-subtle'
+            : 'border-error/20 text-error hover:bg-error-subtle/60',
+        )}
+      >
+        {actionLabel}
+      </button>
+    </div>
   );
 }
