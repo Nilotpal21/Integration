@@ -3,6 +3,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { notFound } from 'next/navigation';
 import { Ban, ChevronRight, KeyRound, MoreVertical, Trash2 } from 'lucide-react';
 import { AddConnectionMenu } from '@/components/integrations/AddConnectionMenu';
+import { AppIcon } from '@/components/integrations/AppIcon';
 import { SyncActiveProject } from '@/components/projects/SyncActiveProject';
 import { Footer } from '@/components/shell/Footer';
 import { getProjectById } from '@/lib/mock-data';

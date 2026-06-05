@@ -171,7 +171,7 @@ function MembershipTab() {
             />
             <PickerSelect
               value={inviteRole}
-              onChange={setInviteRole}
+              onChange={(value) => setInviteRole(value)}
               options={[
                 { value: 'Process Owner', label: 'Process Owner' },
                 { value: 'Reviewer', label: 'Reviewer' },

@@ -132,7 +132,7 @@ export default function SettingsPage() {
           <Field label="Helper memory">
             <PickerSelect
               value={helperMemory}
-              onChange={setHelperMemory}
+              onChange={(value) => setHelperMemory(value)}
               options={[
                 { value: 'conversation', label: 'This conversation only' },
                 { value: 'session', label: 'This session' },
@@ -144,7 +144,7 @@ export default function SettingsPage() {
           <Field label="Helper opens with">
             <PickerSelect
               value={helperOpenMode}
-              onChange={setHelperOpenMode}
+              onChange={(value) => setHelperOpenMode(value)}
               options={[
                 { value: 'suggestions', label: 'Contextual suggestions' },
                 { value: 'blank', label: 'A blank prompt' },
@@ -184,7 +184,7 @@ export default function SettingsPage() {
               <Field label="Charter type">
                 <PickerSelect
                   value={charterType}
-                  onChange={setCharterType}
+                  onChange={(value) => setCharterType(value as typeof charterType)}
                   options={[
                     { value: 'federal', label: 'Federal' },
                     { value: 'state', label: 'State' },
@@ -201,7 +201,7 @@ export default function SettingsPage() {
               <Field label="Data residency">
                 <PickerSelect
                   value={dataResidency}
-                  onChange={setDataResidency}
+                  onChange={(value) => setDataResidency(value)}
                   options={[
                     { value: 'us-east', label: 'us-east (Virginia)' },
                     { value: 'us-west', label: 'us-west (Oregon)' },
@@ -235,7 +235,7 @@ export default function SettingsPage() {
               <Field label="Idle timeout">
                 <PickerSelect
                   value={idleTimeout}
-                  onChange={setIdleTimeout}
+                  onChange={(value) => setIdleTimeout(value)}
                   options={[
                     { value: '5', label: '5 minutes' },
                     { value: '15', label: '15 minutes' },
@@ -248,7 +248,7 @@ export default function SettingsPage() {
               <Field label="Absolute session lifetime">
                 <PickerSelect
                   value={sessionLifetime}
-                  onChange={setSessionLifetime}
+                  onChange={(value) => setSessionLifetime(value)}
                   options={[
                     { value: '4', label: '4 hours' },
                     { value: '8', label: '8 hours' },
@@ -277,7 +277,7 @@ export default function SettingsPage() {
               <Field label="Audit log retention">
                 <PickerSelect
                   value={auditRetention}
-                  onChange={setAuditRetention}
+                  onChange={(value) => setAuditRetention(value)}
                   options={[
                     { value: '3', label: '3 years' },
                     { value: '5', label: '5 years' },
@@ -290,7 +290,7 @@ export default function SettingsPage() {
               <Field label="Conversation transcripts">
                 <PickerSelect
                   value={conversationTranscripts}
-                  onChange={setConversationTranscripts}
+                  onChange={(value) => setConversationTranscripts(value)}
                   options={[
                     { value: '30', label: '30 days' },
                     { value: '90', label: '90 days' },
@@ -302,7 +302,7 @@ export default function SettingsPage() {
               <Field label="Helper conversation history">
                 <PickerSelect
                   value={helperHistory}
-                  onChange={setHelperHistory}
+                  onChange={(value) => setHelperHistory(value)}
                   options={[
                     { value: 'conversation', label: 'This conversation only' },
                     { value: '30', label: '30 days' },
@@ -314,7 +314,7 @@ export default function SettingsPage() {
               <Field label="Sandbox / synthetic data">
                 <PickerSelect
                   value={sandboxDataRetention}
-                  onChange={setSandboxDataRetention}
+                  onChange={(value) => setSandboxDataRetention(value)}
                   options={[
                     { value: '7', label: '7 days' },
                     { value: '14', label: '14 days' },
