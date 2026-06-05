@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Plus, X, Archive } from 'lucide-react';
 import { getProjectById, projects, personas } from '@/lib/mock-data';
 import { Footer } from '@/components/shell/Footer';
+import { PickerSelect } from '@/components/ui/PickerSelect';
 import { cn } from '@/lib/utils';
 
 const TABS = [
@@ -131,6 +132,7 @@ function OverviewTab({ projectName, projectId }: { projectName: string; projectI
 }
 
 function MembershipTab() {
+  const [inviteRole, setInviteRole] = useState('Process Owner');
   return (
     <Section title="Membership & RBAC">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -167,13 +169,18 @@ function MembershipTab() {
               placeholder="email@cornerstone.cu"
               className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-3 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
             />
-            <select className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-3 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40">
-              <option>Process Owner</option>
-              <option>Reviewer</option>
-              <option>Project Admin</option>
-              <option>Knowledge Editor</option>
-              <option>Observer</option>
-            </select>
+            <PickerSelect
+              value={inviteRole}
+              onChange={setInviteRole}
+              options={[
+                { value: 'Process Owner', label: 'Process Owner' },
+                { value: 'Reviewer', label: 'Reviewer' },
+                { value: 'Project Admin', label: 'Project Admin' },
+                { value: 'Knowledge Editor', label: 'Knowledge Editor' },
+                { value: 'Observer', label: 'Observer' },
+              ]}
+              triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+            />
             <button className="h-9 px-4 rounded-md text-xs font-medium bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center gap-1.5">
               <Plus className="size-3.5" />
               Send invitation

@@ -5,8 +5,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Toaster } from 'sonner';
 import { Topbar } from './Topbar';
 import { Sidebar } from './Sidebar';
-import { FloatingHelperButton } from '@/components/helper/FloatingHelperButton';
-import { HelperSheet } from '@/components/helper/HelperSheet';
 import { useAuth } from '@/lib/auth';
 
 const PRE_AUTH_ROUTES = ['/login', '/forgot-password', '/reset-password', '/invite', '/auth'];
@@ -48,20 +46,19 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="flex-1 flex min-h-0">
         {!hideSidebar && <Sidebar />}
         <main className="flex-1 overflow-y-auto scrollbar-thin">
-          <div className="max-w-[1400px] mx-auto px-6 py-6 animate-fade-in">{children}</div>
+          <div className="max-w-[1180px] mx-auto px-3 py-3 animate-fade-in">{children}</div>
         </main>
       </div>
-      <FloatingHelperButton />
-      <HelperSheet />
       <Toaster
-        theme="dark"
+        theme="light"
         position="bottom-right"
         toastOptions={{
           style: {
-            background: 'hsl(220 3% 12.5%)',
-            border: '1px solid hsl(220 4% 18%)',
-            color: 'hsl(220 1% 98%)',
+            background: 'hsl(0 0% 100%)',
+            border: '1px solid hsl(220 20% 86%)',
+            color: 'hsl(221 39% 18%)',
             fontSize: 13,
+            boxShadow: '0 18px 40px rgba(15, 23, 42, 0.08)',
           },
         }}
       />

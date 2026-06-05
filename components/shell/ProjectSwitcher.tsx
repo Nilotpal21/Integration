@@ -20,7 +20,7 @@ function ProjectBadge({ project, size = 'sm' }: { project: Project; size?: 'sm' 
         : 'size-5 text-[10px] rounded';
   return (
     <span
-      className={`${dims} bg-success-subtle border border-border-muted text-success font-semibold flex items-center justify-center shrink-0`}
+      className={`${dims} bg-accent-subtle border border-border-muted text-accent font-semibold flex items-center justify-center shrink-0`}
     >
       {projectInitial(project)}
     </span>
@@ -50,7 +50,7 @@ export function ProjectSwitcher({ variant = 'compact' }: ProjectSwitcherProps) {
         {variant === 'card' ? (
           <button
             type="button"
-            className="w-full flex items-center gap-2.5 text-left p-2 rounded-md hover:bg-background-elevated transition-colors"
+            className="w-full flex items-center gap-2.5 text-left p-2 rounded-lg hover:bg-background-muted transition-colors"
             aria-label="Switch project"
           >
             {active ? (
@@ -59,12 +59,12 @@ export function ProjectSwitcher({ variant = 'compact' }: ProjectSwitcherProps) {
               <span className="size-8 rounded-md bg-background-elevated border border-border-muted" />
             )}
             <span className="flex-1 min-w-0">
-              <span className="block text-sm font-semibold tracking-tight truncate text-foreground">
+                  <span className="block text-[14px] font-semibold tracking-tight truncate text-foreground">
                 {active?.name ?? 'No project'}
               </span>
               {active && (
                 <span className="block text-[11px] text-foreground-subtle tabular-nums">
-                  {active.appCount} {active.appCount === 1 ? 'agent' : 'agents'}
+                  {active.appCount} {active.appCount === 1 ? 'app' : 'apps'}
                 </span>
               )}
             </span>
@@ -73,7 +73,7 @@ export function ProjectSwitcher({ variant = 'compact' }: ProjectSwitcherProps) {
         ) : (
           <button
             type="button"
-            className="flex items-center gap-2 px-2 py-1 rounded-md text-foreground hover:bg-background-elevated transition-colors text-xs"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-foreground hover:bg-background-muted transition-colors text-xs"
             aria-label="Switch project"
           >
             {active ? (
@@ -93,7 +93,7 @@ export function ProjectSwitcher({ variant = 'compact' }: ProjectSwitcherProps) {
         <DropdownMenu.Content
           align="start"
           sideOffset={6}
-          className="z-50 min-w-[260px] rounded-lg border border-border bg-background-elevated shadow-xl p-1 animate-fade-in"
+          className="z-50 min-w-[220px] rounded-xl border border-border bg-background-subtle shadow-xl p-1 animate-fade-in"
         >
           <div className="px-1.5 pt-1.5 pb-1">
             <div className="relative">
@@ -103,7 +103,7 @@ export function ProjectSwitcher({ variant = 'compact' }: ProjectSwitcherProps) {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.stopPropagation()}
                 placeholder="Search projects…"
-                className="w-full h-8 bg-background-muted/60 border border-border-muted rounded-md pl-8 pr-2 text-xs text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-1 focus:ring-border-focus/40"
+                className="w-full h-9 bg-background-muted border border-border-muted rounded-xl pl-8 pr-2 text-xs text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-1 focus:ring-border-focus/40"
               />
             </div>
           </div>

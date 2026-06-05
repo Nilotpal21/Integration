@@ -5,9 +5,9 @@ import { AppShell } from '@/components/shell/AppShell';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Eltropy — Agentic AI Platform for Credit Unions',
+  title: 'cloudagle.ai — Integration Builder Prototype',
   description:
-    'Upload your SOP. The platform builds the agentic app. An AI Helper guides you. Evaluation runs continuously.',
+    'Build, test, and activate independent connectors from docs or templates.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

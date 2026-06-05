@@ -3,12 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
-  FileText,
-  Bot,
-  LineChart,
-  Sparkles,
-  Store,
+  Blocks,
   BookOpen,
   Settings,
   Inbox,
@@ -19,7 +14,7 @@ import {
   Users,
   Settings2,
   Rocket,
-  MessagesSquare,
+  Store,
   ChevronLeft,
   type LucideIcon,
 } from 'lucide-react';
@@ -44,14 +39,8 @@ interface NavGroup {
 const NAV: Record<'processOwner' | 'reviewer' | 'admin', NavGroup> = {
   processOwner: {
     primary: [
-      { id: 'overview', label: 'Overview', icon: LayoutDashboard, href: '/' },
-      { id: 'sops', label: 'SOPs', icon: FileText, href: '/sops' },
-      { id: 'apps', label: 'Apps', icon: Bot, href: '/apps' },
-      { id: 'chat', label: 'Chat', icon: MessagesSquare, href: '/chat' },
-      { id: 'evaluations', label: 'Evaluations', icon: LineChart, href: '/evaluations' },
-      { id: 'deployments', label: 'Deployments', icon: Rocket, href: '/deployments' },
-      { id: 'knowledge', label: 'Knowledge', icon: Database, href: '/knowledge', count: 12 },
-      { id: 'marketplace', label: 'Marketplace', icon: Store, href: '/marketplace' },
+      { id: 'integrations', label: 'Integrations', icon: Blocks, href: '/integrations' },
+      { id: 'mode-hub', label: 'Mode hub', icon: Cpu, href: '/mode-hub' },
     ],
     secondary: [
       { id: 'docs', label: 'Docs', icon: BookOpen, href: '/docs' },
@@ -100,12 +89,12 @@ export function Sidebar() {
   const isProcessOwner = personaKey === 'processOwner';
 
   return (
-    <aside className="w-[224px] shrink-0 border-r border-border bg-background-subtle flex flex-col">
+    <aside className="w-[220px] shrink-0 border-r border-border bg-background-subtle flex flex-col">
       {isProcessOwner && project && (
-        <div className="px-2 pt-3 pb-2 border-b border-border-muted space-y-1.5">
+        <div className="px-3 pt-3 pb-2.5 border-b border-border-muted space-y-1">
           <Link
             href="/projects"
-            className="flex items-center gap-1 px-2 text-[10px] uppercase tracking-wide text-foreground-meta hover:text-foreground transition-colors font-medium"
+            className="flex items-center gap-1 px-2 text-[11px] text-foreground-meta hover:text-foreground transition-colors font-medium"
           >
             <ChevronLeft className="size-3" />
             All projects
@@ -114,19 +103,17 @@ export function Sidebar() {
         </div>
       )}
 
-      <nav className="flex-1 px-2 py-3 space-y-0.5">
+      <nav className="flex-1 px-2.5 py-3 space-y-0.5">
         {primary.map((item) => {
-          // Process Owner's "Overview" and "Chat" items are project-scoped.
           let href = item.href;
-          if (isProcessOwner && project) {
-            if (item.id === 'overview') href = `/projects/${project.id}`;
-            if (item.id === 'chat') href = `/projects/${project.id}/chat`;
+          if (personaKey === 'processOwner' && item.id === 'integrations' && activeProjectId) {
+            href = `/projects/${activeProjectId}`;
           }
           return (
             <NavRow
               key={item.id}
               item={{ ...item, href }}
-              isActive={isActiveRoute(href, pathname, item.id === 'overview')}
+              isActive={isActiveRoute(href, pathname)}
             />
           );
         })}
@@ -136,7 +123,7 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="mx-2 mb-3 mt-2 rounded-lg border border-border-muted bg-background-muted/60 p-3">
+      <div className="mx-2.5 mb-2.5 mt-2 rounded-xl border border-border-muted bg-background-muted p-2.5">
         <div className="flex items-center gap-2 mb-1.5">
           <div className="size-1.5 rounded-full bg-success animate-pulse" />
           <span className="text-[10px] font-medium uppercase tracking-wide text-foreground-muted">
@@ -156,19 +143,19 @@ function NavRow({ item, isActive }: { item: NavItem; isActive: boolean }) {
     <Link
       href={item.href}
       className={cn(
-        'w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors',
+        'w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[14px] font-medium transition-colors',
         isActive
-          ? 'bg-background-elevated text-foreground'
-          : 'text-foreground-muted hover:bg-background-elevated/60 hover:text-foreground',
+          ? 'bg-accent-subtle text-accent'
+          : 'text-foreground-muted hover:bg-background-muted hover:text-foreground',
       )}
     >
-      <Icon className="size-3.5 shrink-0" />
+      <Icon className="size-4 shrink-0" />
       <span className="flex-1 text-left">{item.label}</span>
       {item.count !== undefined && (
         <span
           className={cn(
             'text-[10px] font-mono tabular-nums',
-            isActive ? 'text-foreground-muted' : 'text-foreground-subtle',
+            isActive ? 'text-accent' : 'text-foreground-subtle',
           )}
         >
           {item.count}
@@ -179,6 +166,9 @@ function NavRow({ item, isActive }: { item: NavItem; isActive: boolean }) {
 }
 
 function isActiveRoute(href: string, pathname: string, looseProjectMatch = false): boolean {
+  if (href === '/integrations' && (pathname.startsWith('/integrations') || pathname.startsWith('/projects/'))) {
+    return true;
+  }
   if (looseProjectMatch && href.startsWith('/projects/')) {
     // "Overview" item — active for /projects/[id] and any descendant
     return pathname === href || pathname.startsWith(`${href}/`);

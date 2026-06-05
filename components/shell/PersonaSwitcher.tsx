@@ -33,7 +33,7 @@ export function PersonaSwitcher() {
         <button
           type="button"
           className={cn(
-            'size-7 rounded-full border border-border flex items-center justify-center text-[11px] font-medium transition-colors hover:border-foreground-muted',
+            'size-9 rounded-full border border-border flex items-center justify-center text-xs font-medium transition-colors hover:border-foreground-muted',
             hueClasses[active.avatarHue],
           )}
           aria-label={`Switch persona — currently ${active.role}`}
@@ -46,7 +46,7 @@ export function PersonaSwitcher() {
         <DropdownMenu.Content
           align="end"
           sideOffset={6}
-          className="z-50 min-w-[280px] rounded-lg border border-border bg-background-elevated shadow-xl p-1 animate-fade-in"
+          className="z-50 min-w-[280px] rounded-2xl border border-border bg-background-subtle shadow-xl p-1 animate-fade-in"
         >
           <div className="px-3 py-2 text-[10px] uppercase tracking-wide text-foreground-meta font-medium">
             Workspace

@@ -5,44 +5,44 @@
 @layer base {
   :root {
     /* Background */
-    --background: 220 3% 4%;
-    --background-subtle: 220 3% 7%;
-    --background-muted: 220 3% 10%;
-    --background-elevated: 220 3% 12.5%;
+    --background: 220 33% 98%;
+    --background-subtle: 0 0% 100%;
+    --background-muted: 220 20% 96%;
+    --background-elevated: 220 18% 94%;
 
     /* Foreground */
-    --foreground: 220 1% 98%;
-    --foreground-muted: 220 2% 64%;
-    --foreground-meta: 220 2% 55%;
-    --foreground-subtle: 220 2% 45%;
+    --foreground: 221 39% 18%;
+    --foreground-muted: 220 18% 48%;
+    --foreground-meta: 220 13% 58%;
+    --foreground-subtle: 220 12% 68%;
 
     /* Border */
-    --border: 220 4% 18%;
-    --border-muted: 220 2% 14%;
-    --border-focus: 217 91% 60%;
+    --border: 220 20% 86%;
+    --border-muted: 220 18% 90%;
+    --border-focus: 220 87% 56%;
 
-    /* Accent — monochrome */
-    --accent: 220 5% 93%;
-    --accent-foreground: 220 5% 5%;
-    --accent-muted: 220 5% 80%;
-    --accent-subtle: 220 3% 15%;
+    /* Accent */
+    --accent: 220 87% 56%;
+    --accent-foreground: 0 0% 100%;
+    --accent-muted: 220 87% 51%;
+    --accent-subtle: 220 100% 96%;
 
     /* Status */
-    --success: 142.1 76.2% 36.3%;
+    --success: 142 64% 42%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 142.1 40% 15%;
+    --success-subtle: 142 58% 94%;
 
-    --warning: 40 93.4% 47.5%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 9%;
-    --warning-subtle: 40 40% 15%;
+    --warning-subtle: 40 100% 94%;
 
-    --error: 0 72.2% 50.6%;
+    --error: 0 72% 56%;
     --error-foreground: 0 0% 100%;
-    --error-subtle: 0 40% 15%;
+    --error-subtle: 0 100% 96%;
 
-    --info: 187.2 85.7% 53.3%;
+    --info: 199 89% 48%;
     --info-foreground: 0 0% 9%;
-    --info-subtle: 187.2 40% 15%;
+    --info-subtle: 199 100% 95%;
 
     --purple: 262.1 83.3% 57.8%;
     --purple-foreground: 0 0% 100%;
@@ -66,7 +66,9 @@
     height: 100%;
   }
   body {
-    background-color: hsl(var(--background));
+    background:
+      radial-gradient(circle at top left, hsl(220 100% 99%), transparent 28%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(220 30% 97%));
     color: hsl(var(--foreground));
     font-feature-settings: 'cv11', 'ss01';
     -webkit-font-smoothing: antialiased;

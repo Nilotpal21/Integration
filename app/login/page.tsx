@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { KeyRound, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { KeyRound, Eye, EyeOff, ArrowRight, Workflow } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 
 type Stage = 'credentials' | 'mfa';
@@ -13,7 +13,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [stage, setStage] = useState<Stage>('credentials');
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('demo@cornerstone.cu');
+  const [email, setEmail] = useState('pm@integration.studio');
   const [password, setPassword] = useState('demo-password');
   const [otp, setOtp] = useState('');
 
@@ -36,22 +36,52 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 bg-background">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/eltropy-logo.png"
-        alt="Eltropy"
-        className="h-9 w-auto mb-6"
-      />
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.1),_transparent_28%),linear-gradient(180deg,rgba(248,250,252,1),rgba(241,245,249,1))] px-4 py-10">
+      <div className="mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="space-y-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-subtle px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-foreground-muted">
+            <Workflow className="size-3.5" />
+            Integration Builder
+          </div>
+          <div className="space-y-4">
+            <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-foreground lg:text-5xl">
+              Sign in to build secure connectors from docs or templates.
+            </h1>
+            <p className="max-w-xl text-sm leading-7 text-foreground-muted">
+              Prototype access includes connector creation, parsed-spec confirmation, server-side sandbox testing,
+              and lifecycle controls for active, disabled, and revoked connections.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              ['App -> many connectors', 'Independent connector records grouped under each app.'],
+              ['Scratch or template', 'Choose docs-driven generation or start from a vetted baseline.'],
+              ['Test before save', 'Activation is gated by a successful server-side sandbox run.'],
+            ].map(([title, body]) => (
+              <div key={title} className="rounded-2xl border border-border bg-background-subtle p-4 shadow-sm">
+                <p className="text-sm font-medium text-foreground">{title}</p>
+                <p className="mt-2 text-sm leading-6 text-foreground-muted">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      <div className="w-full max-w-[420px] rounded-2xl border border-border bg-background-elevated p-8 shadow-xl">
+        <div className="flex flex-col items-center">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/cloudagle-logo.svg"
+            alt="cloudagle.ai"
+            className="mb-6 h-9 w-auto"
+          />
+
+          <div className="w-full max-w-[420px] rounded-[28px] border border-border bg-background-subtle p-8 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
         {stage === 'credentials' && (
           <>
             <h1 className="text-xl font-semibold tracking-tight text-center">
-              Sign in to Eltropy
+              Sign in to Integration Studio
             </h1>
             <p className="text-xs text-foreground-muted text-center mt-1.5">
-              Build, evaluate, and deploy credit-union AI apps.
+              Manage apps, connectors, and secure credential flows.
             </p>
 
             <button
@@ -60,10 +90,10 @@ export default function LoginPage() {
               className="w-full mt-6 h-10 rounded-md bg-accent text-accent-foreground hover:bg-accent-muted transition-colors flex items-center justify-center gap-2 text-sm font-medium"
             >
               <KeyRound className="size-4" />
-              Continue with Cornerstone SSO
+              Continue with Workspace SSO
             </button>
             <p className="text-[11px] text-foreground-subtle text-center mt-2">
-              Federated via your credit union&apos;s identity provider.
+              Recommended for production tenants and admin workspaces.
             </p>
 
             <div className="flex items-center gap-3 my-6">
@@ -79,7 +109,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@cornerstone.cu"
+                placeholder="you@company.com"
                 className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-3 text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-1 focus:ring-border-focus/40"
               />
               <div className="relative">
@@ -169,7 +199,7 @@ export default function LoginPage() {
         )}
       </div>
 
-      <footer className="mt-6 flex items-center gap-3 text-[11px] text-foreground-subtle">
+          <footer className="mt-6 flex items-center gap-3 text-[11px] text-foreground-subtle">
         <Link href="#" className="hover:text-foreground-muted transition-colors">
           Privacy
         </Link>
@@ -181,7 +211,9 @@ export default function LoginPage() {
         <Link href="#" className="hover:text-foreground-muted transition-colors">
           Need help?
         </Link>
-      </footer>
+          </footer>
+        </div>
+      </div>
     </div>
   );
 }

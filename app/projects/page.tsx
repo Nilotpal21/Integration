@@ -89,7 +89,7 @@ function ProjectCard({ project: p }: { project: Project }) {
         <span className="inline-flex items-center gap-1.5">
           <Bot className="size-3.5 text-foreground-subtle" />
           <span className="tabular-nums">{p.appCount}</span>{' '}
-          {p.appCount === 1 ? 'agent' : 'agents'}
+          {p.appCount === 1 ? 'app' : 'apps'}
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Clock className="size-3.5 text-foreground-subtle" />

@@ -15,10 +15,21 @@ import { toast } from 'sonner';
 import { personas, tenant } from '@/lib/mock-data';
 import { useActivePersona } from '@/lib/persona';
 import { Footer } from '@/components/shell/Footer';
+import { PickerSelect } from '@/components/ui/PickerSelect';
 import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   const persona = useActivePersona();
+  const [helperMemory, setHelperMemory] = useState('conversation');
+  const [helperOpenMode, setHelperOpenMode] = useState('suggestions');
+  const [charterType, setCharterType] = useState(tenant.charter);
+  const [dataResidency, setDataResidency] = useState('us-east');
+  const [idleTimeout, setIdleTimeout] = useState('30');
+  const [sessionLifetime, setSessionLifetime] = useState('8');
+  const [auditRetention, setAuditRetention] = useState('7');
+  const [conversationTranscripts, setConversationTranscripts] = useState('90');
+  const [helperHistory, setHelperHistory] = useState('conversation');
+  const [sandboxDataRetention, setSandboxDataRetention] = useState('14');
 
   const isAdmin = persona.role === 'Credit Union Admin';
 
@@ -119,23 +130,27 @@ export default function SettingsPage() {
       >
         <FieldGrid>
           <Field label="Helper memory">
-            <select
-              defaultValue="conversation"
-              className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-            >
-              <option value="conversation">This conversation only</option>
-              <option value="session">This session</option>
-              <option value="long">Long-term (90 days)</option>
-            </select>
+            <PickerSelect
+              value={helperMemory}
+              onChange={setHelperMemory}
+              options={[
+                { value: 'conversation', label: 'This conversation only' },
+                { value: 'session', label: 'This session' },
+                { value: 'long', label: 'Long-term (90 days)' },
+              ]}
+              triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+            />
           </Field>
           <Field label="Helper opens with">
-            <select
-              defaultValue="suggestions"
-              className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-            >
-              <option value="suggestions">Contextual suggestions</option>
-              <option value="blank">A blank prompt</option>
-            </select>
+            <PickerSelect
+              value={helperOpenMode}
+              onChange={setHelperOpenMode}
+              options={[
+                { value: 'suggestions', label: 'Contextual suggestions' },
+                { value: 'blank', label: 'A blank prompt' },
+              ]}
+              triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+            />
           </Field>
         </FieldGrid>
         <Toggle
@@ -167,13 +182,15 @@ export default function SettingsPage() {
                 />
               </Field>
               <Field label="Charter type">
-                <select
-                  defaultValue={tenant.charter}
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option value="federal">Federal</option>
-                  <option value="state">State</option>
-                </select>
+                <PickerSelect
+                  value={charterType}
+                  onChange={setCharterType}
+                  options={[
+                    { value: 'federal', label: 'Federal' },
+                    { value: 'state', label: 'State' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
               <Field label="Region">
                 <input
@@ -182,14 +199,16 @@ export default function SettingsPage() {
                 />
               </Field>
               <Field label="Data residency">
-                <select
-                  defaultValue="us-east"
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option>us-east (Virginia)</option>
-                  <option>us-west (Oregon)</option>
-                  <option>eu-west (Ireland)</option>
-                </select>
+                <PickerSelect
+                  value={dataResidency}
+                  onChange={setDataResidency}
+                  options={[
+                    { value: 'us-east', label: 'us-east (Virginia)' },
+                    { value: 'us-west', label: 'us-west (Oregon)' },
+                    { value: 'eu-west', label: 'eu-west (Ireland)' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
             </FieldGrid>
           </Section>
@@ -214,26 +233,30 @@ export default function SettingsPage() {
                 </div>
               </Field>
               <Field label="Idle timeout">
-                <select
-                  defaultValue="30"
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option value="5">5 minutes</option>
-                  <option value="15">15 minutes</option>
-                  <option value="30">30 minutes</option>
-                  <option value="60">1 hour</option>
-                </select>
+                <PickerSelect
+                  value={idleTimeout}
+                  onChange={setIdleTimeout}
+                  options={[
+                    { value: '5', label: '5 minutes' },
+                    { value: '15', label: '15 minutes' },
+                    { value: '30', label: '30 minutes' },
+                    { value: '60', label: '1 hour' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
               <Field label="Absolute session lifetime">
-                <select
-                  defaultValue="8"
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option value="4">4 hours</option>
-                  <option value="8">8 hours</option>
-                  <option value="12">12 hours</option>
-                  <option value="24">24 hours</option>
-                </select>
+                <PickerSelect
+                  value={sessionLifetime}
+                  onChange={setSessionLifetime}
+                  options={[
+                    { value: '4', label: '4 hours' },
+                    { value: '8', label: '8 hours' },
+                    { value: '12', label: '12 hours' },
+                    { value: '24', label: '24 hours' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
             </FieldGrid>
             <Toggle
@@ -252,45 +275,53 @@ export default function SettingsPage() {
           >
             <FieldGrid>
               <Field label="Audit log retention">
-                <select
-                  defaultValue="7"
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option value="3">3 years</option>
-                  <option value="5">5 years</option>
-                  <option value="7">7 years (recommended)</option>
-                  <option value="10">10 years</option>
-                </select>
+                <PickerSelect
+                  value={auditRetention}
+                  onChange={setAuditRetention}
+                  options={[
+                    { value: '3', label: '3 years' },
+                    { value: '5', label: '5 years' },
+                    { value: '7', label: '7 years (recommended)' },
+                    { value: '10', label: '10 years' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
               <Field label="Conversation transcripts">
-                <select
-                  defaultValue="90"
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option value="30">30 days</option>
-                  <option value="90">90 days</option>
-                  <option value="365">1 year</option>
-                </select>
+                <PickerSelect
+                  value={conversationTranscripts}
+                  onChange={setConversationTranscripts}
+                  options={[
+                    { value: '30', label: '30 days' },
+                    { value: '90', label: '90 days' },
+                    { value: '365', label: '1 year' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
               <Field label="Helper conversation history">
-                <select
-                  defaultValue="conversation"
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option value="conversation">This conversation only</option>
-                  <option value="30">30 days</option>
-                  <option value="90">90 days</option>
-                </select>
+                <PickerSelect
+                  value={helperHistory}
+                  onChange={setHelperHistory}
+                  options={[
+                    { value: 'conversation', label: 'This conversation only' },
+                    { value: '30', label: '30 days' },
+                    { value: '90', label: '90 days' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
               <Field label="Sandbox / synthetic data">
-                <select
-                  defaultValue="14"
-                  className="w-full h-9 bg-background-muted/60 border border-border-muted rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-border-focus/40"
-                >
-                  <option value="7">7 days</option>
-                  <option value="14">14 days</option>
-                  <option value="30">30 days</option>
-                </select>
+                <PickerSelect
+                  value={sandboxDataRetention}
+                  onChange={setSandboxDataRetention}
+                  options={[
+                    { value: '7', label: '7 days' },
+                    { value: '14', label: '14 days' },
+                    { value: '30', label: '30 days' },
+                  ]}
+                  triggerClassName="h-9 rounded-md bg-background-muted/60 px-3"
+                />
               </Field>
             </FieldGrid>
           </Section>

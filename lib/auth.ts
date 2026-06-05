@@ -14,9 +14,9 @@ interface AuthState {
 }
 
 export const useAuth = create<AuthState>((set) => ({
-  isAuthenticated: true,
-  signedInAt: new Date().toISOString(),
-  authMethod: 'sso',
+  isAuthenticated: false,
+  signedInAt: null,
+  authMethod: null,
   idleLock: false,
   signIn: (method) =>
     set({
